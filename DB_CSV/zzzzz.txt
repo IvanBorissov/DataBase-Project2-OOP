@@ -1,0 +1,4 @@
+ID:string;FIRST_NAME:string;NAME:string;AGE:int
+6604061408;c:\alabala\Borislav Todorov;Borissov;56
+0241258866;Ivan;Borissov;20
+9208028733;Yana;Borissova;29

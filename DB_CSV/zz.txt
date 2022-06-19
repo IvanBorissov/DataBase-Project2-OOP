@@ -1,0 +1,2 @@
+ID:string;FIRST_NAME:string;NAME:string;AGE:int
+6604061408;c:\alabala\Borislav Todorov;Borissov;56
