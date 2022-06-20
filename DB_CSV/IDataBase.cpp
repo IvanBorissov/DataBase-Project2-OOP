@@ -204,6 +204,38 @@ void IDataBase::Run()
             continue;
         }
 
+        iPos = s.find("rename"); ///rename table with <old name> to a <new name>
+        if (iPos >= 0)
+        {
+            stringstream ss(s);
+            string strTmp, strOldName, strNewName;
+            getline(ss, strTmp, ' ');
+            getline(ss, strOldName, ' ');
+            getline(ss, strNewName, ' ');
+
+            if (!pDataBase->TableExists(strOldName))
+            {
+                cout << "No such Table" <<'\n';
+            }
+            else
+            {
+                if (pDataBase->TableExists(strNewName))
+                {
+                    cout << "Table with" << strNewName << " already exists" << '\n';
+                }
+                else
+                {
+                    if (!pDataBase->RenameTable(strOldName, strNewName))
+                    {
+                        cout << "Error with renaming table" << '\n';
+                    }
+                }
+            }
+            
+            bShowInfo = false;
+            continue;
+        }
+
 
     } while (s != "exit");
 }

@@ -23,6 +23,7 @@ public:
 	bool DeleteAllWhere(int iColumnNo, string strValue, string strTable);
 	bool SelectCountWhere(int iColumnNo, string strValue, string strTable);
 	bool AddColumnToTable(string strTable, string strColumn, string strColumnType);
+	bool RenameTable (string strOldName, string strNewName);
 private:
 	string m_strPathToDB;
 	void SaveCatalogToFile();

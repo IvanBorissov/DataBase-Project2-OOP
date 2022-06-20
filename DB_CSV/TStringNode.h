@@ -13,6 +13,7 @@ public:
 	void Copy(char s[], int iLenght, int iPos);
 	///TStringNode(const TStringNode &s);
 	///TStringNode operator =(const TStringNode &s);
+	void Rename(string s);
 	int Pos(char ch);
 	virtual void Process();
 	virtual void Print();

@@ -27,6 +27,7 @@ public:
 	bool SelectCountWhere(int iColumnNo, string strValue);
 	bool ColumnExists(string strColumnName);
 	bool AddColumn(string strColumnName, string strColumnType);
+	void Rename(string s);
 private:
 	bool ParseFieldDefinitions(string strFields);
 	bool ParseDataRow(string strData);

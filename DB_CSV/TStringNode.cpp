@@ -57,6 +57,18 @@ void TStringNode::Copy(char s[], int iLenght, int iPos)
  	s[iLenght] = '\0';
 }
 
+void TStringNode::Rename(string s)
+{
+	delete[] m_pString;
+	int sz = s.size() + 1;
+	m_pString = new char[sz];
+	for (int i = 0; i < sz - 1; i++)
+	{
+		m_pString[i] = s[i];
+	}
+	m_pString[sz - 1] = '\0';
+}
+
 int TStringNode::Pos(char ch)
 {
 	int iPos = -1;

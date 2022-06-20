@@ -284,3 +284,37 @@ bool TDataBase::AddColumnToTable(string strTable, string strColumn, string strCo
 	}
 	return false;
 }
+
+bool TDataBase::RenameTable(string strOldName, string strNewName)
+{
+
+	TStringNode* pN = (TStringNode*)m_pCatalog->m_pFirst;
+	if (pN == NULL)
+		return false;
+
+	string strTmp = m_strPathToDB + "\\" + strOldName + ".csv";
+	do
+	{
+		string s(pN->m_pString);
+		if (strTmp == s)
+		{
+			pN->Rename(strNewName + ".csv");
+			break;
+		}
+		pN = (TStringNode*)m_pCatalog->GetNext(pN);
+	} while (pN != NULL);
+	
+	SaveCatalogToFile();
+
+	TTable* pTable = GetTable(strOldName);
+	if (pTable == NULL)
+	{
+		return false;
+	}
+	pTable->Rename(strNewName);
+
+	string strFileName = m_strPathToDB + "\\" + strNewName + ".csv";
+	pTable->Export(strFileName);
+
+	return true;
+}

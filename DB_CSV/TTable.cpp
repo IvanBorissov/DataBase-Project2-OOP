@@ -430,3 +430,15 @@ bool TTable::AddColumn(string strColumnName, string strColumnType)
 
 	return false;
 }
+
+void TTable::Rename(string s)
+{
+	delete[] m_strTableName;
+	int sz = s.size() + 1;
+	m_strTableName = new char[sz];
+	for (int i = 0; i < sz - 1; i++)
+	{
+		m_strTableName[i] = s[i];
+	}
+	m_strTableName[sz - 1] = '\0';
+}
