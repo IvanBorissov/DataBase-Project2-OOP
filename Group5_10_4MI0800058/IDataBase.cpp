@@ -25,15 +25,15 @@ void IDataBase::Run()
             cout << "export <name> <file name>                           Export table with <name> in file <filename>\n";                            //OK
             cout << "select <column n> <value> < table name >            Select all rows from <table name> where <column n> have a <value>\n";      //OK
             cout << "addcolumn <table name> <column name > <column type> Add new <clumn name> to <table> with empty values\n";                      //OK   
-            //cout << "delete <table name> <search column n> <search value>Delete all rows from table where column n have a <search value>\n";
-            //cout << "insert <table name> <column 1> … <column n>         Insert in <table name> a row with values <column 1>...<column n>\n";
-            //cout << "innerjoin <table 1> <column n1> <table 2> <column n2> Inner Join on two tables on <column n1> and <column n2>\n";
-            cout << "rename <old name> <new name>                        Rename a table <old name> with <new name>\n";                                //OK  
+            cout << "delete <table name> <search column n> <search value>Delete all rows from table where column n have a <search value>\n";
+            cout << "insert <table name> <column 1> … <column n>         Insert in <table name> a row with values <column 1>...<column n>\n";
+            cout << "innerjoin <table 1> <column n1> <table 2> <column n2> Inner Join on two tables on <column n1> and <column n2>\n";
+            cout << "rename <old name> <new name>                        Rename a table <old name> with <new name>\n";
             cout << "count <table name> <search column n> <search value> Display a count of rows having a <search value> in <search column n>\n\n";   //OK
-            //cout << "aggregate <table name> <search column n>            Performs an <operation> sum, product, maximum, minimum \n";
-            //cout << "          <search value> <target column n>          on the values of the column with sequence number <target column n>\n";
-            //cout << "          <operation>                               of all rows whose columns are numbered < search column n >\n";
-            //cout << "                                                    contain the value <search value>\n";
+            cout << "aggregate <table name> <search column n>            Performs an <operation> sum, product, maximum, minimum \n";
+            cout << "          <search value> <target column n>          on the values of the column with sequence number <target column n>\n";
+            cout << "          <operation>                               of all rows whose columns are numbered < search column n >\n";
+            cout << "                                                    contain the value <search value>\n";
             cout << "\n\n";
         }
         bShowInfo = true;
@@ -215,7 +215,7 @@ void IDataBase::Run()
 
             if (!pDataBase->TableExists(strOldName))
             {
-                cout << "No such Table" << '\n';
+                cout << "No such Table" <<'\n';
             }
             else
             {
@@ -231,7 +231,7 @@ void IDataBase::Run()
                     }
                 }
             }
-
+            
             bShowInfo = false;
             continue;
         }

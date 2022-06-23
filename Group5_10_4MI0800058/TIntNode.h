@@ -3,17 +3,14 @@
 
 ///Class that houses an integer value and inherits TNode
 ///Basically an Integer value with a Pointer to the next element stuck to it
-class TDoubleNode : public TNode
+class TIntNode : public TNode
 {
 public:
-	TDoubleNode(double dValue);
-	double getDoubleValue() { return m_pValue; };
-	void setValue(double dValue) { m_pValue = dValue; };
+	int m_pValue;
+	TIntNode(int iValue);
 	virtual void Process();
 	virtual void Print();
 	virtual string GetValue();
-	virtual ~TDoubleNode();
-protected:
-	double m_pValue;
+	virtual ~TIntNode();
 };
 

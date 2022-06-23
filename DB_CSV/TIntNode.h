@@ -6,11 +6,14 @@
 class TIntNode : public TNode
 {
 public:
-	int m_pValue;
 	TIntNode(int iValue);
+	int getIntValue() { return m_pValue; };
+	void setValue(int iValue) { m_pValue = iValue; };
 	virtual void Process();
 	virtual void Print();
 	virtual string GetValue();
 	virtual ~TIntNode();
+protected:
+	int m_pValue;
 };
 

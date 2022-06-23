@@ -6,7 +6,7 @@
 
 void TRow::Print()
 {
-	TNode* pNode = GetFirst();
+	TNode* pNode = m_pFirst;
 	if (pNode == NULL)
 		return;
 
@@ -18,8 +18,8 @@ void TRow::Print()
 	cout << "\n";
 }
 
-bool TRow::Check(int iColumnNo, TField::TFieldType ftFieldType, string strValue)
-{
+bool TRow::Check(int iColumnNo, TField::TFieldType ftFieldType, string strValue) 
+{ 
 	TNode* pN = this->FindNode(iColumnNo);
 	if (pN == NULL)
 		return false;
@@ -29,16 +29,16 @@ bool TRow::Check(int iColumnNo, TField::TFieldType ftFieldType, string strValue)
 	case TField::ftInt:
 		if (stoi(pN->GetValue()) - stoi(strValue) == 0)
 			return true;
-		break;
-	case TField::ftDouble:
-		if (stod(pN->GetValue()) - stod(strValue) < 0.0001)
+			break;
+		case TField::ftDouble:
+			if (stod(pN->GetValue()) - stod(strValue) < 0.0001)
 			return true;
-		break;
-	case TField::ftString:
-		if (pN->GetValue() == strValue)
-			return true;
-		break;
+			break;
+		case TField::ftString:
+			if (pN->GetValue() == strValue)
+				return true;
+			break;
 
 	}
-	return false;
+	return false; 
 }

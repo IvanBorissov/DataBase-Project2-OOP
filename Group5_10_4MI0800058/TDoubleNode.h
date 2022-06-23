@@ -6,14 +6,12 @@
 class TDoubleNode : public TNode
 {
 public:
+	double m_pValue;
 	TDoubleNode(double dValue);
-	double getDoubleValue() { return m_pValue; };
-	void setValue(double dValue) { m_pValue = dValue; };
 	virtual void Process();
 	virtual void Print();
 	virtual string GetValue();
 	virtual ~TDoubleNode();
-protected:
-	double m_pValue;
+
 };
 

@@ -7,17 +7,14 @@
 class TLineList : public TNode
 {
 public:
+	TNode* m_pFirst;
+	TNode* m_pLast;
+	int    m_iCount;
 	TLineList();
 	int Add(TNode* pNode);
 	TNode* FindNode(int iKey);
 	TNode* GetNext(TNode* pNode);
 	TNode* GetPrev(TNode* pNode);
-	TNode* GetFirst() { return m_pFirst; };
-	void   SetFirst(TNode* pNode) { m_pFirst = pNode; };
-	TNode* GetLast() { return m_pLast; };
-	void   SetLast(TNode* pNode) { m_pLast = pNode; };
-	int	   GetCount() { return m_iCount; };
-	void   SetCount(int iCount) { m_iCount = iCount; };
 	TNode* ExtractFirst();
 	TNode* ExtractLast();
 	TNode* ExtractNode(int iKey);
@@ -26,9 +23,5 @@ public:
 	bool   IsEmpty();
 	virtual void Process();
 	virtual ~TLineList();
-private:
-	TNode* m_pFirst;
-	TNode* m_pLast;
-	int    m_iCount;
 };
 

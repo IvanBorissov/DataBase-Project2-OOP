@@ -17,35 +17,34 @@ int TLineList::Add(TNode* pNode)
 	if (pNode == NULL)
 		return -1;
 
-	pNode->SetKey(m_iCount);
-
+	pNode->iKey = m_iCount;
+	
 	if (m_pLast != NULL)
 	{
-		pNode->SetNextNodePtr(NULL);//pNode->m_pNextNode = NULL;
-		m_pLast->SetNextNodePtr(pNode);
+		pNode->m_pNextNode = NULL;
+		m_pLast->m_pNextNode = pNode;
 	}
 	else
-		SetFirst(pNode);
+		m_pFirst = pNode;
 
-	SetLast(pNode);
+	m_pLast = pNode;
 
-	int i = GetCount() + 1;
-	SetCount(i);
+	m_iCount++;
 
-	return pNode->GetKey();
+	return pNode->iKey;
 }
 
 TNode* TLineList::FindNode(int iKey)
 {
-	TNode* pNode = GetFirst();
+	TNode* pNode = m_pFirst;
 	if (pNode == NULL)
 		return NULL;
 
 	do
 	{
-		if (pNode->GetKey() == iKey)
+		if (pNode->iKey == iKey)
 			return pNode;
-
+		
 		pNode = GetNext(pNode);
 	} while (pNode != NULL);
 
@@ -55,7 +54,7 @@ TNode* TLineList::FindNode(int iKey)
 TNode* TLineList::GetNext(TNode* pNode)
 {
 	if (pNode != NULL)
-		return pNode->GetNextNodePtr();
+		return pNode->m_pNextNode; 
 	else
 		return NULL;
 }
@@ -64,9 +63,9 @@ TNode* TLineList::GetPrev(TNode* pNode)
 {
 	if (pNode == NULL)
 		return NULL;
-
+	
 	TNode* pPrevNode = NULL;
-	TNode* pFoundNode = GetFirst();
+	TNode* pFoundNode = m_pFirst;
 	bool bNotFound = true;
 
 	while (pFoundNode != NULL && bNotFound)
@@ -76,7 +75,7 @@ TNode* TLineList::GetPrev(TNode* pNode)
 		else
 		{
 			pPrevNode = pFoundNode;
-			pFoundNode = pFoundNode->GetNextNodePtr();
+			pFoundNode = pFoundNode->m_pNextNode;
 		}
 	}
 
@@ -85,29 +84,28 @@ TNode* TLineList::GetPrev(TNode* pNode)
 
 void TLineList::Reindex()
 {
-	SetCount(0);
-	if (GetFirst() == NULL)
+	m_iCount = 0;
+	if (m_pFirst == NULL)
 		return;
 
-	TNode* pNode = GetFirst();
+	TNode* pNode = m_pFirst;
 	do
 	{
-		pNode->SetKey(m_iCount);
-		int i = GetCount();
-		SetCount(i++);
+		pNode->iKey = m_iCount;
+		m_iCount++;
 		pNode = GetNext(pNode);
 	} while (pNode != NULL);
 }
 
 void TLineList::Process()
 {
-	if (GetFirst() == NULL)
+	if (m_pFirst == NULL)
 		return;
 
-	TNode* pNode = m_pFirst;
+	TNode * pNode = m_pFirst;
 	do
 	{
-		std::cout << "Key=" << pNode->GetKey() << "\n";
+		std::cout << "Key=" << pNode->iKey<<"\n";
 		pNode->Process();
 		pNode = GetNext(pNode);
 	} while (pNode != NULL);
@@ -117,12 +115,12 @@ TNode* TLineList::ExtractFirst()
 {
 	if (IsEmpty())
 		return NULL;
-
+	
 	TNode* pNode;
 
-	pNode = GetFirst();
-	m_pFirst = pNode->GetNextNodePtr();
-
+	pNode = m_pFirst;
+	m_pFirst = pNode->m_pNextNode;
+	
 	Reindex();
 	return pNode;
 }
@@ -131,13 +129,11 @@ TNode* TLineList::ExtractLast()
 {
 	if (IsEmpty())
 		return NULL;
-
-	TNode* pNode = GetLast();//m_pLast;
-	SetLast(GetPrev(pNode));
-	//m_pLast = GetPrev(m_pLast);
-
-	pNode->SetNextNodePtr(NULL);
-	m_pLast->SetNextNodePtr(NULL);
+	
+	TNode* pNode = m_pLast;
+	m_pLast = GetPrev(m_pLast);
+	pNode->m_pNextNode = NULL;
+	m_pLast->m_pNextNode = NULL;
 	Reindex();
 
 	return pNode;
@@ -150,20 +146,20 @@ TLineList::~TLineList()
 {
 	std::cout << "Running the destructor of TLineList\n";
 	bool bExit = true;
-	TNode* pNode = GetFirst();
+	TNode* pNode = m_pFirst;
 	do
 	{
 		pNode = ExtractFirst();
 		if (pNode != NULL)
 		{
-			if (pNode->GetNextNodePtr() == NULL)
+			if (pNode->m_pNextNode == NULL)
 				bExit = false;
 			delete pNode;
 		}
 		else
 			bExit = false;
-
-
+				
+		
 	} while (bExit);
 }
 
@@ -177,15 +173,14 @@ TNode* TLineList::ExtractNode(int iKey)
 		pPrev = GetPrev(pNode);
 		if (pPrev != NULL)
 		{
-			//pPrev->m_pNextNode = pNode->m_pNextNode;
-			pPrev->SetNextNodePtr(pNode->GetNextNodePtr());
-			pNode->SetNextNodePtr(NULL);
+			pPrev->m_pNextNode = pNode->m_pNextNode;
+			pNode->m_pNextNode = NULL;
 			Reindex();
 			return pNode;
 		}
 		else
 			return ExtractFirst();
-
+			
 	}
 
 	return NULL;

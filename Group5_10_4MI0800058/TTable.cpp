@@ -30,19 +30,19 @@ TTable::~TTable()
 }
 
 bool TTable::LoadFromFile(char* FileName)
-{
+{ 
 	bool bResult = false;
 
 	string strFileName(FileName);
 
 	ifstream file(strFileName);
 	string strRow;
-	int iRow = 0;
+	int iRow=0;
 
 	if (file.is_open())
 	{
 		//while (file >> strRow)
-		while (getline(file, strRow))
+		while (getline(file,strRow))
 		{
 			if (iRow == 0)
 				ParseFieldDefinitions(strRow);
@@ -61,10 +61,10 @@ bool TTable::LoadFromFile(char* FileName)
 };
 
 bool TTable::ParseFieldDefinitions(std::string strFields)
-{
+{ 
 	stringstream ss(strFields);
 	string strField;
-	while (getline(ss, strField, ';'))
+	while (getline(ss, strField,';'))
 	{
 		stringstream sss(strField);
 		string strFieldName;
@@ -89,11 +89,11 @@ bool TTable::ParseFieldDefinitions(std::string strFields)
 		m_pFieldsDefinitions->Add(pField);
 	}
 
-	return true;
+	return true; 
 };
 
 bool TTable::ParseDataRow(string strData)
-{
+{ 
 	stringstream ss(strData);
 	string strField;
 	int iFieldIndex = 0;
@@ -104,64 +104,64 @@ bool TTable::ParseDataRow(string strData)
 		TField* pFieldType = (TField*)m_pFieldsDefinitions->FindNode(iFieldIndex);
 		if (pFieldType != NULL) //add data to m_pRows only when have a FieldDefinition
 		{
-			switch (pFieldType->GetFieldType())
+			switch (pFieldType->m_FieldType)
 			{
-			case TField::ftInt:
-			{
-				TIntNode* pIntNode = new TIntNode(stoi(strField));
-				pRow->Add(pIntNode);
-			}
-			break;
-
-			case TField::ftString:
-			{
-				TStringNode* pStringNode = new TStringNode(&strField[0]);
-				pRow->Add(pStringNode);
-			}
-			break;
-
-			case TField::ftDouble:
-			{
-				TDoubleNode* pDoubleNode = new TDoubleNode(stod(strField));
-				pRow->Add(pDoubleNode);
-			}
-			break;
+				case TField::ftInt:
+				{
+					TIntNode* pIntNode = new TIntNode(stoi(strField));
+					pRow->Add(pIntNode);
+				}
+				break;
+				
+				case TField::ftString:
+				{
+					TStringNode* pStringNode = new TStringNode(&strField[0]);
+					pRow->Add(pStringNode);
+				}
+				break;
+				
+				case TField::ftDouble:
+				{
+					TDoubleNode* pDoubleNode = new TDoubleNode(stod(strField));
+					pRow->Add(pDoubleNode);
+				}	
+				break;
 			}
 		}
 		iFieldIndex++;
 	}
 	this->m_pRows->Add(pRow);
 
-	return true;
+	return true; 
 };
 
 void TTable::DescribeFields()
 {
-	TField* pField = (TField*)m_pFieldsDefinitions->GetFirst();
+	TField* pField = (TField*)m_pFieldsDefinitions->m_pFirst;
 	if (pField == NULL)
 		return;
 
 	do
 	{
-		cout << pField->GetFieldName() << ":";
-		switch (pField->GetFieldType())
+		cout << pField->m_strFieldName<<":";
+		switch (pField->m_FieldType)
 		{
 		case TField::ftInt: cout << "int;\n";
-			break;
+				break;
 		case TField::ftDouble: cout << "double;\n";
-			break;
+				break;
 		case TField::ftString: cout << "string;\n";
 			break;
 		}
+	
 
-
-		pField = (TField*)m_pFieldsDefinitions->GetNext(pField);
+			pField = (TField*)m_pFieldsDefinitions->GetNext(pField);
 	} while (pField != NULL);
 }
 
 void TTable::Print()
 {
-	TRow* pRow = (TRow*)m_pRows->GetFirst();
+	TRow* pRow = (TRow*)m_pRows->m_pFirst;
 	if (pRow == NULL)
 		return;
 
@@ -169,8 +169,7 @@ void TTable::Print()
 	{
 		pRow->Print();
 
-		//pRow = (TRow*)m_pFieldsDefinitions->GetNext(pRow); ????
-		pRow = (TRow*)m_pRows->GetNext(pRow);
+		pRow = (TRow*)m_pFieldsDefinitions->GetNext(pRow);
 	} while (pRow != NULL);
 
 }
@@ -181,21 +180,21 @@ string TTable::GetRowAsCSV(TRow* pRow)
 		return "";
 
 	string s = "";
-
-	TNode* pN = pRow->GetFirst();
+	
+	TNode* pN = pRow->m_pFirst;
 	if (pN != NULL)
 		do
 		{
 			s += pN->GetValue();
-			if (pN->GetNextNodePtr() != NULL)
+				if (pN->m_pNextNode != NULL)
 				s += ";";
 			else
 				s += "\n";
 
-			pN = pRow->GetNext(pN);
+				pN = pRow->GetNext(pN);
 		} while (pN != NULL);
 
-		return s;
+	return s;
 }
 
 bool TTable::Export(string FileName)
@@ -206,26 +205,26 @@ bool TTable::Export(string FileName)
 		if (file.is_open())
 		{
 
-			TField* pField = (TField*)m_pFieldsDefinitions->GetFirst();
+			TField* pField = (TField*)m_pFieldsDefinitions->m_pFirst;
 			if (pField == NULL)
 				return false;
 
 			string s("");
 			do
 			{
-				s += pField->GetFieldName();
+				s += pField->m_strFieldName;
 				s += ":";
-				switch (pField->GetFieldType())
+				switch (pField->m_FieldType)
 				{
 				case TField::ftInt: s += "int";
 					break;
 				case TField::ftDouble: s += "double";
 					break;
-				case TField::ftString: s += "string";
+				case TField::ftString: s+= "string";
 					break;
 				}
 
-				if (pField->GetNextNodePtr() != NULL)
+				if (pField->m_pNextNode != NULL)
 					s += ";";
 				else
 					s += "\n";
@@ -235,8 +234,8 @@ bool TTable::Export(string FileName)
 
 			//export field definitions to first row of the file
 			file << s;
-
-			TRow* pR = (TRow*)m_pRows->GetFirst();
+			
+			TRow* pR = (TRow*)m_pRows->m_pFirst;
 			if (pR != NULL)
 			{
 				do
@@ -257,28 +256,28 @@ bool TTable::Export(string FileName)
 	{
 		return false;
 	}
-
+	
 	return false;
 }
 
 bool TTable::SelectAllWhere(int iColumnNo, string strValue)
 {
-	TField* pF = (TField*)m_pFieldsDefinitions->FindNode(iColumnNo);
+	TField* pF=(TField*)m_pFieldsDefinitions->FindNode(iColumnNo);
 	if (pF == NULL)
 		return false;
 
-
-	TRow* pR = (TRow*)m_pRows->GetFirst();
+	
+	TRow* pR = (TRow*)m_pRows->m_pFirst;
 	if (pR != NULL)
 	{
 		do
 		{
-			if (pR->Check(iColumnNo, pF->GetFieldType(), strValue))
+			if (pR->Check(iColumnNo, pF->m_FieldType, strValue))
 			{
 				string s = GetRowAsCSV(pR);
 				cout << s;
 			}
-
+			
 			pR = (TRow*)m_pRows->GetNext(pR);
 		} while (pR != NULL);
 	}
@@ -292,18 +291,18 @@ bool TTable::DeleteAllWhere(int iColumnNo, string strValue)
 		return false;
 
 
-	TRow* pR = (TRow*)m_pRows->GetFirst();
+	TRow* pR = (TRow*)m_pRows->m_pFirst;
 	if (pR != NULL)
 	{
 		do
 		{
-			if (pR->Check(iColumnNo, pF->GetFieldType(), strValue))
+			if (pR->Check(iColumnNo, pF->m_FieldType, strValue))
 			{
-
-				TRow* pRTmp = (TRow*)m_pRows->ExtractNode(pR->GetKey());
+				
+				TRow* pRTmp = (TRow*)m_pRows->ExtractNode(pR->iKey);
 				if (pRTmp != NULL)
 				{
-					pR = (TRow*)pRTmp->GetNextNodePtr();
+					pR = (TRow*)pRTmp->m_pNextNode;
 					delete pRTmp;
 
 					if (pR != NULL)
@@ -311,7 +310,7 @@ bool TTable::DeleteAllWhere(int iColumnNo, string strValue)
 					else
 						break;
 				}
-
+					
 			}
 
 			if (pR != NULL)
@@ -331,18 +330,18 @@ bool TTable::SelectCountWhere(int iColumnNo, string strValue)
 
 	int iCount = 0;
 
-	TRow* pR = (TRow*)m_pRows->GetFirst();
+	TRow* pR = (TRow*)m_pRows->m_pFirst;
 	if (pR != NULL)
 	{
 		do
 		{
-			if (pR->Check(iColumnNo, pF->GetFieldType(), strValue))
+			if (pR->Check(iColumnNo, pF->m_FieldType, strValue))
 				iCount++;
-
-			pR = (TRow*)m_pRows->GetNext(pR);
+			
+				pR = (TRow*)m_pRows->GetNext(pR);
 		} while (pR != NULL);
 
-		cout << "Count = " << iCount << "\n";
+		cout << "Count = " <<iCount <<"\n";
 
 		return true;
 	}
@@ -351,15 +350,15 @@ bool TTable::SelectCountWhere(int iColumnNo, string strValue)
 
 bool TTable::ColumnExists(string strColumnName)
 {
-	TField* pField = (TField*)m_pFieldsDefinitions->GetFirst();
+	TField* pField = (TField*)m_pFieldsDefinitions->m_pFirst;
 	if (pField == NULL)
 		return false;
 
 	do
 	{
-		if (strColumnName == pField->GetFieldName())
+		if (strColumnName == pField->m_strFieldName)
 			return true;
-
+		
 		pField = (TField*)m_pFieldsDefinitions->GetNext(pField);
 	} while (pField != NULL);
 
@@ -392,35 +391,35 @@ bool TTable::AddColumn(string strColumnName, string strColumnType)
 	m_pFieldsDefinitions->Add(pField);
 
 	//add emty values on the last place of each row
-
-	TRow* pRow = (TRow*)m_pRows->GetFirst();
+	
+	TRow* pRow = (TRow*)m_pRows->m_pFirst;
 	if (pRow != NULL)
 	{
 		do
 		{
-			switch (pField->GetFieldType())
+			switch (pField->m_FieldType)
 			{
-			case TField::ftInt:
-			{
-				TIntNode* pIntNode = new TIntNode(0);
-				pRow->Add(pIntNode);
-			}
-			break;
+				case TField::ftInt:
+				{
+					TIntNode* pIntNode = new TIntNode(0);
+					pRow->Add(pIntNode);
+				}
+				break;
 
-			case TField::ftString:
-			{
-				string s = "NULL";
-				TStringNode* pStringNode = new TStringNode(&s[0]);
-				pRow->Add(pStringNode);
-			}
-			break;
+				case TField::ftString:
+				{
+					string s = "NULL";
+					TStringNode* pStringNode = new TStringNode(&s[0]);
+					pRow->Add(pStringNode);
+				}
+				break;
 
-			case TField::ftDouble:
-			{
-				TDoubleNode* pDoubleNode = new TDoubleNode(0);
-				pRow->Add(pDoubleNode);
-			}
-			break;
+				case TField::ftDouble:
+				{
+					TDoubleNode* pDoubleNode = new TDoubleNode(0);
+					pRow->Add(pDoubleNode);
+				}
+				break;
 			}
 
 			pRow = (TRow*)m_pRows->GetNext(pRow);

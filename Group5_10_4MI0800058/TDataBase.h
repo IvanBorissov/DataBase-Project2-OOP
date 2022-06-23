@@ -7,10 +7,10 @@
 class TDataBase : public TNode
 {
 public:
-	TLineList* GetCatalog() { return m_pCatalog; };
-	TLineList* GetTables() { return m_pTables; };
+	TLineList* m_pCatalog;
+	TLineList* m_pTables;
 	TDataBase();
-	virtual ~TDataBase();
+	virtual ~TDataBase() ;
 	bool Init(char* PathToDB);
 	bool AddCSVFileToDB(string FileName);
 	bool TableExists(string TableName);
@@ -23,10 +23,8 @@ public:
 	bool DeleteAllWhere(int iColumnNo, string strValue, string strTable);
 	bool SelectCountWhere(int iColumnNo, string strValue, string strTable);
 	bool AddColumnToTable(string strTable, string strColumn, string strColumnType);
-	bool RenameTable(string strOldName, string strNewName);
+	bool RenameTable (string strOldName, string strNewName);
 private:
-	TLineList* m_pCatalog;
-	TLineList* m_pTables;
 	string m_strPathToDB;
 	void SaveCatalogToFile();
 

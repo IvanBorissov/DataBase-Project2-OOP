@@ -23,10 +23,10 @@ bool TDataBase::Init(char* PathToDB)
 {
 	bool bResult = false;
 
-	m_strPathToDB = PathToDB;
+	m_strPathToDB = PathToDB ;
 	string strFileName(PathToDB);
 	strFileName.append("\\catalog.txt");
-
+	
 	ifstream file(strFileName);
 	string line;
 
@@ -41,25 +41,25 @@ bool TDataBase::Init(char* PathToDB)
 			m_pCatalog->Add(pStrNode);
 		}
 	}
-
+	
 	if (m_pCatalog->IsEmpty())
 		return bResult;
-
-	TStringNode* pStrNode = (TStringNode*)m_pCatalog->GetFirst();
+	
+	TStringNode* pStrNode = (TStringNode*)m_pCatalog->m_pFirst;
 	do
 	{
 		/*char arr[80];
 		char* TblName = pStrNode->m_pString;
 		pStrNode->Copy(arr, pStrNode->Pos('.'),0);*/
 
-		string strTableName(pStrNode->GetString());
-
+		string strTableName(pStrNode->m_pString);
+		
 		int iPos = strTableName.find_last_of("\\"); //strip the filepath form files
 		strTableName = strTableName.substr(iPos + 1, strTableName.length() - iPos);
 		strTableName = strTableName.substr(0, strTableName.find_last_of("."));
 		TTable* pTable = new TTable(&strTableName[0]);
-		pTable->LoadFromFile(pStrNode->GetString());
-		m_pTables->Add(pTable);
+		pTable->LoadFromFile(pStrNode->m_pString);  
+ 		m_pTables->Add(pTable);
 
 		pStrNode = (TStringNode*)m_pCatalog->GetNext(pStrNode);
 	} while (pStrNode != NULL);
@@ -69,36 +69,36 @@ bool TDataBase::Init(char* PathToDB)
 };
 
 
-bool TDataBase::AddCSVFileToDB(string FileName)
-{
+bool TDataBase::AddCSVFileToDB(string FileName) 
+{ 
 	bool bResult = false;
-
+	
 	if (FileName.find(".csv") < 0)
 		return bResult;
 
 	string strDestFile(FileName);
 	int iPos = strDestFile.find_last_of("\\");
-	strDestFile = strDestFile.substr(iPos + 1, strDestFile.length() - iPos);
+	strDestFile = strDestFile.substr(iPos+1, strDestFile.length()-iPos);
 	string strTableName(strDestFile);
 
 	//search in Catalog
 	if (!m_pCatalog->IsEmpty())
 	{
-		TStringNode* pStrN = (TStringNode*)m_pCatalog->GetFirst();
+		TStringNode* pStrN = (TStringNode*)m_pCatalog->m_pFirst;
 		do
 		{
-			string strTmp(pStrN->GetString());
+			string strTmp(pStrN->m_pString);
 			iPos = strTmp.find_last_of("\\");
 			strTmp = strTmp.substr(iPos + 1, strTmp.length() - iPos);
 			if (strTmp == strTableName)
 				return bResult;//false
 
-			pStrN = (TStringNode*)pStrN->GetNextNodePtr();
+			pStrN = (TStringNode*)pStrN->m_pNextNode;
 		} while (pStrN != NULL);
 	}
-
-
-
+	
+	
+	
 
 
 	strDestFile = m_strPathToDB + "\\" + strDestFile;
@@ -116,11 +116,11 @@ bool TDataBase::AddCSVFileToDB(string FileName)
 
 		bResult = true;
 	}
-	catch (...)
+	catch(...)
 	{
 		bResult = false;
 	}
-
+	
 
 	return bResult;
 };
@@ -128,15 +128,15 @@ bool TDataBase::AddCSVFileToDB(string FileName)
 void TDataBase::ShowTables()
 {
 
-	TStringNode* pN = (TStringNode*)m_pCatalog->GetFirst();
+	TStringNode* pN = (TStringNode*)m_pCatalog->m_pFirst;
 	if (pN == NULL)
 		return;
 
 	do
 	{
-		string s(pN->GetString());
+		string s(pN->m_pString);
 		int iPos = s.find_last_of("\\"); //strip the filepath form files
-		cout << s.substr(iPos + 1, s.length() - iPos) << "\n";
+		cout << s.substr(iPos+1,s.length() - iPos) << "\n";
 		pN = (TStringNode*)m_pCatalog->GetNext(pN);
 	} while (pN != NULL);
 
@@ -144,7 +144,7 @@ void TDataBase::ShowTables()
 
 void TDataBase::SaveCatalogToFile()
 {
-	TStringNode* pN = (TStringNode*)m_pCatalog->GetFirst();
+	TStringNode* pN = (TStringNode*)m_pCatalog->m_pFirst;
 	if (pN == NULL)
 		return;
 
@@ -157,31 +157,31 @@ void TDataBase::SaveCatalogToFile()
 
 		do
 		{
-			string s(pN->GetString());
+			string s(pN->m_pString);
 			int iPos = s.find_last_of("\\"); //strip the filepath form files
 			file << s.substr(iPos + 1, s.length() - iPos) << "\n";
 			pN = (TStringNode*)m_pCatalog->GetNext(pN);
 		} while (pN != NULL);
-
+		
 		file.close();
 	}
 }
 
 bool TDataBase::DescribeFields(string TableName)
 {
-	TTable* pTable = (TTable*)m_pTables->GetFirst();
+	TTable* pTable = (TTable*)m_pTables->m_pFirst;
 	if (pTable == NULL)
 		return false;
 
 	do
 	{
 		string s(pTable->m_strTableName);
-		if (s == TableName || s.append(".csv") == TableName)
+		if (s == TableName || s.append(".csv")== TableName)
 		{
 			pTable->DescribeFields();
 			return true;
 		}
-
+		
 		pTable = (TTable*)m_pCatalog->GetNext(pTable);
 	} while (pTable != NULL);
 
@@ -200,7 +200,7 @@ bool TDataBase::Print(string TableName)
 
 TTable* TDataBase::GetTable(string TableName)
 {
-	TTable* pTable = (TTable*)m_pTables->GetFirst();
+	TTable* pTable = (TTable*)m_pTables->m_pFirst;
 	if (pTable == NULL)
 		return NULL;
 
@@ -209,7 +209,7 @@ TTable* TDataBase::GetTable(string TableName)
 		string s(pTable->m_strTableName);
 		if (s == TableName || s.append(".csv") == TableName)
 			return pTable;
-
+		
 		pTable = (TTable*)m_pCatalog->GetNext(pTable);
 	} while (pTable != NULL);
 
@@ -218,8 +218,8 @@ TTable* TDataBase::GetTable(string TableName)
 
 bool TDataBase::TableExists(string TableName)
 {
-
-	return (GetTable(TableName) != NULL);
+	
+	return (GetTable(TableName)!=NULL);
 }
 
 bool TDataBase::Export(string TableName, string FileName)
@@ -288,14 +288,14 @@ bool TDataBase::AddColumnToTable(string strTable, string strColumn, string strCo
 bool TDataBase::RenameTable(string strOldName, string strNewName)
 {
 
-	TStringNode* pN = (TStringNode*)m_pCatalog->GetFirst();
+	TStringNode* pN = (TStringNode*)m_pCatalog->m_pFirst;
 	if (pN == NULL)
 		return false;
 
 	string strTmp = m_strPathToDB + "\\" + strOldName + ".csv";
 	do
 	{
-		string s(pN->GetString());
+		string s(pN->m_pString);
 		if (strTmp == s)
 		{
 			pN->Rename(strNewName + ".csv");
@@ -303,7 +303,7 @@ bool TDataBase::RenameTable(string strOldName, string strNewName)
 		}
 		pN = (TStringNode*)m_pCatalog->GetNext(pN);
 	} while (pN != NULL);
-
+	
 	SaveCatalogToFile();
 
 	TTable* pTable = GetTable(strOldName);

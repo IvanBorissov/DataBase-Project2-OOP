@@ -24,5 +24,5 @@ string TDoubleNode::GetValue()
 {
 	return to_string(m_pValue);
 }
-
+ 
 

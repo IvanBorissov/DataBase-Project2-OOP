@@ -5,7 +5,7 @@
 
 class IDataBase
 {
-protected:
+private:
 	TDataBase* pDataBase;
 public:
 	IDataBase(std::string PathToDB);
